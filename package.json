@@ -27,6 +27,7 @@
     "dev:frontend": "rm -rf apps/frontend/dist && pnpm --filter ./apps/frontend run dev",
     "dev:workers": "rm -rf apps/workers/dist && pnpm --filter ./apps/workers run dev",
     "dev:cron": "rm -rf apps/cron/dist && pnpm --filter ./apps/cron run dev",
+    "start": "next start",
     "start:prod:backend": "pnpm --filter ./apps/backend run start",
     "start:prod:frontend": "pnpm --filter ./apps/frontend run start",
     "start:prod:workers": "pnpm --filter ./apps/workers run start",
