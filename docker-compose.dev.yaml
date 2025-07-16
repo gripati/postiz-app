@@ -1,5 +1,18 @@
 version: '3.8'
 services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: postiz-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postiz
+      POSTGRES_PASSWORD: postizpwd
+      POSTGRES_DB: postizdb
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
   backend:
     build:
       context: .
@@ -9,7 +22,15 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+      - DATABASE_URL=postgresql://postiz:postizpwd@postgres:5432/postizdb
       # Diğer backend environment variable'larınızı buraya ekleyin
+    depends_on:
+      - postgres
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     restart: unless-stopped
 
   frontend:
@@ -26,3 +47,6 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
+
+volumes:
+  postgres-data:
