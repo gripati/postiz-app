@@ -36,14 +36,9 @@ RUN pnpm install --frozen-lockfile
 # 9️⃣ Build
 RUN pnpm run build
 
-# 1️⃣0️⃣ Port aç
+# 1️⃣0️⃣ Port aç (hem frontend hem backend için)
+EXPOSE 3000
 EXPOSE 4200
 
 # 1️⃣1️⃣ Entrypoint veya CMD
-# Eğer supervisord kullanıyorsan supervisord'u başlat:
 ENTRYPOINT ["/app/entrypoint.sh"]
-
-# Alternatif: Sadece pm2 kullanıyorsan:
-# CMD ["pm2-runtime", "start", "ecosystem.config.js"]
-
-# Not: entrypoint.sh içinde `exec supervisord -c /etc/supervisord.conf` gibi bir komut olmalı.

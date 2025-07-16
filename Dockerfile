@@ -16,5 +16,7 @@ RUN pnpm install --frozen-lockfile
 WORKDIR /app/apps/frontend
 RUN pnpm build
 
+EXPOSE 4200
+
 # Production başlat (her durumda doğru dizinde çalışır)
 CMD ["pnpm", "--dir", "/app/apps/frontend", "start"] 

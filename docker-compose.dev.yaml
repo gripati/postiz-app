@@ -22,8 +22,17 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+      - PORT=3000
+      - BACKEND_INTERNAL_URL=http://localhost:3000
       - DATABASE_URL=postgresql://postiz:postizpwd@postgres:5432/postizdb
-      # Diğer backend environment variable'larınızı buraya ekleyin
+      - FRONTEND_URL=http://localhost:4200
+      - IS_GENERAL=true
+      - JWT_SECRET=8djsnfus6fbsbsbsd6d5fgater
+      - MAIN_URL=http://localhost:4200
+      - REDIS_URL=redis://redis:6379?family=0
+      - SKIP_CONFIG_CHECK=true
+      - STORAGE_PROVIDER=local
+      - UPLOAD_DIRECTORY=/uploads
     depends_on:
       - postgres
     healthcheck:
@@ -42,10 +51,18 @@ services:
       - "4200:4200"
     environment:
       - NODE_ENV=production
-      # Railway'de bu değişkeni Railway dashboard'dan backend'inizin public URL'siyle ayarlayın
       - NEXT_PUBLIC_BACKEND_URL=http://postiz-backend:3000
+      - NEXT_PUBLIC_UPLOAD_DIRECTORY=/uploads
+      - NEXT_PUBLIC_UPLOAD_STATIC_DIRECTORY=/uploads
     depends_on:
       - backend
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: postiz-redis
+    ports:
+      - "6379:6379"
     restart: unless-stopped
 
 volumes:
