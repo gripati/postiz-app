@@ -1,21 +1,49 @@
+# 1️⃣ Temel image
 FROM node:20-alpine3.19
+
+# 2️⃣ Versiyon argümanı (Opsiyonel)
 ARG NEXT_PUBLIC_VERSION
 ENV NEXT_PUBLIC_VERSION=$NEXT_PUBLIC_VERSION
-RUN apk add --no-cache g++ make py3-pip supervisor bash caddy
+
+# 3️⃣ Gerekli paketler
+RUN apk add --no-cache \
+  g++ \
+  make \
+  py3-pip \
+  supervisor \
+  bash \
+  caddy
+
+# 4️⃣ Global paketler
 RUN npm --no-update-notifier --no-fund --global install pnpm@10.6.1 pm2
 
+# 5️⃣ Çalışma dizini
 WORKDIR /app
 
+# 6️⃣ Dosyaları kopyala
 COPY . /app
 COPY var/docker/supervisord.conf /etc/supervisord.conf
 COPY var/docker/Caddyfile /app/Caddyfile
 COPY var/docker/entrypoint.sh /app/entrypoint.sh
 COPY var/docker/supervisord/caddy.conf /etc/supervisor.d/caddy.conf
+
+# 7️⃣ Entrypoint scriptine izin ver
 RUN chmod +x /app/entrypoint.sh
 
-RUN pnpm install
+# 8️⃣ Bağımlılıkları yükle
+RUN pnpm install --frozen-lockfile
+
+# 9️⃣ Build
 RUN pnpm run build
 
+# 1️⃣0️⃣ Port aç
 EXPOSE 4200
 
-CMD ["pnpm", "run", "pm2"]
+# 1️⃣1️⃣ Entrypoint veya CMD
+# Eğer supervisord kullanıyorsan supervisord'u başlat:
+ENTRYPOINT ["/app/entrypoint.sh"]
+
+# Alternatif: Sadece pm2 kullanıyorsan:
+# CMD ["pm2-runtime", "start", "ecosystem.config.js"]
+
+# Not: entrypoint.sh içinde `exec supervisord -c /etc/supervisord.conf` gibi bir komut olmalı.
