@@ -6,7 +6,7 @@
 [services.frontend]
   source = "apps/frontend"
   start = "pnpm --filter frontend start"
-  build = "pnpm --filter frontend build"
+  build = "pnpm install --frozen-lockfile && pnpm --filter frontend build"
 
 [services.cron]
   source = "apps/cron"

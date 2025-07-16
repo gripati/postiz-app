@@ -4,7 +4,7 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "dev": "dotenv -e ../../.env -- next dev -p 4200",
+    "dev": "next dev -p 4200",
     "build": "next build",
     "start": "next start -p 4200",
     "pm2": "pm2 start pnpm --name frontend -- start"
