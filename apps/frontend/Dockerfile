@@ -11,5 +11,4 @@ RUN pnpm install --frozen-lockfile
 WORKDIR /app/apps/frontend
 RUN pnpm build
 
-# Railway kökten başlatırsa bile, pnpm'ye dizini belirtiyoruz!
 CMD ["pnpm", "--dir", "/app/apps/frontend", "start"] 

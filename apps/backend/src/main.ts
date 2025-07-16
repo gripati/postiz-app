@@ -14,16 +14,15 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     rawBody: true,
     cors: {
-      ...(!process.env.NOT_SECURED ? { credentials: true } : {}),
-      exposedHeaders: [
-        'reload',
-        'onboarding',
-        'activate',
-        ...(process.env.NOT_SECURED ? ['auth', 'showorg', 'impersonate'] : []),
-      ],
       origin: [
         process.env.FRONTEND_URL,
         ...(process.env.MAIN_URL ? [process.env.MAIN_URL] : []),
+        '*', // fallback
+      ],
+      credentials: true,
+      exposedHeaders: [
+        'reload', 'onboarding', 'activate',
+        ...(process.env.NOT_SECURED ? ['auth', 'showorg', 'impersonate'] : []),
       ],
     },
   });
@@ -41,9 +40,10 @@ async function bootstrap() {
   loadSwagger(app);
 
   const port = process.env.PORT || 3000;
+  const host = '0.0.0.0'; // Railway ve production için dışarıya aç
 
   try {
-    await app.listen(port);
+    await app.listen(port, host);
 
     checkConfiguration(); // Do this last, so that users will see obvious issues at the end of the startup log without having to scroll up.
 
