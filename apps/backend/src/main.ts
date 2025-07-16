@@ -16,11 +16,13 @@ async function bootstrap() {
     process.env.FRONTEND_URL,
     ...(process.env.MAIN_URL ? [process.env.MAIN_URL] : []),
   ];
+  console.log('Allowed Origins:', allowedOrigins);
 
   const app = await NestFactory.create(AppModule, {
     rawBody: true,
     cors: {
       origin: function (origin, callback) {
+        console.log('CORS Origin:', origin);
         // allow requests with no origin (like mobile apps, curl, etc.)
         if (!origin || allowedOrigins.includes(origin)) {
           callback(null, true);
