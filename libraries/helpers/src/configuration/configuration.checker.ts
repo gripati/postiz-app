@@ -31,6 +31,20 @@ export class ConfigurationChecker {
     this.checkIsValidUrl('NEXT_PUBLIC_BACKEND_URL');
     this.checkIsValidUrl('BACKEND_INTERNAL_URL');
     this.checkNonEmpty('STORAGE_PROVIDER', 'Needed to setup storage.');
+
+    // Railway için: Eksik değişken varsa uygulamayı durdur
+    if (this.hasIssues()) {
+      // Kırmızı log için (Railway loglarında dikkat çeker)
+      // eslint-disable-next-line no-console
+      console.error('\x1b[41m\x1b[37m[ENV ERROR] Eksik veya hatalı environment variable(lar) bulundu!\x1b[0m');
+      for (const issue of this.getIssues()) {
+        // eslint-disable-next-line no-console
+        console.error('\x1b[31m[ENV] ' + issue + '\x1b[0m');
+      }
+      // eslint-disable-next-line no-console
+      console.error('\x1b[41m\x1b[37mUygulama başlatılamadı. Railway dashboard’da backend servisine .env dosyasındaki tüm değişkenleri ekleyin!\x1b[0m');
+      process.exit(1);
+    }
   }
 
   checkNonEmpty(key: string, description?: string): boolean {

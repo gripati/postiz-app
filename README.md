@@ -135,3 +135,25 @@ This repository's source code is available under the [AGPL-3.0 license](LICENSE)
 <p align="center">
   <a href="https://www.g2.com/products/postiz/take_survey" target="blank"><img alt="g2" src="https://github.com/user-attachments/assets/892cb74c-0b49-4589-b2f5-fbdbf7a98f66" /></a>
 </p>
+
+---
+
+## Railway için .env'den Environment Variable Aktarma
+
+1. Proje köküne `.env` dosyanı koy.
+2. Aşağıdaki bash script ile tüm değişkenleri Railway dashboard'a kolayca aktar:
+
+```bash
+# .env dosyasındaki tüm değişkenleri Railway dashboard'a eklemek için:
+cat .env | grep -v '^#' | grep -v '^$' | while read line; do
+  key=$(echo $line | cut -d '=' -f 1)
+  value=$(echo $line | cut -d '=' -f 2-)
+  echo "$key=$value"
+done
+```
+
+3. Çıktıdaki her satırı Railway dashboard > Environment sekmesine kopyala/yapıştır yapabilirsin.
+
+> **Not:** Railway .env dosyasını otomatik okumaz, bu yüzden değişkenleri dashboard'dan eklemen gerekir.
+
+---
