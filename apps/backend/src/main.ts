@@ -11,14 +11,23 @@ import { HttpExceptionFilter } from '@gitroom/nestjs-libraries/services/exceptio
 import { ConfigurationChecker } from '@gitroom/helpers/configuration/configuration.checker';
 
 async function bootstrap() {
+  // CORS whitelist
+  const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    ...(process.env.MAIN_URL ? [process.env.MAIN_URL] : []),
+  ];
+
   const app = await NestFactory.create(AppModule, {
     rawBody: true,
     cors: {
-      origin: [
-        process.env.FRONTEND_URL,
-        ...(process.env.MAIN_URL ? [process.env.MAIN_URL] : []),
-        '*', // fallback
-      ],
+      origin: function (origin, callback) {
+        // allow requests with no origin (like mobile apps, curl, etc.)
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error('Not allowed by CORS'));
+        }
+      },
       credentials: true,
       exposedHeaders: [
         'reload', 'onboarding', 'activate',
